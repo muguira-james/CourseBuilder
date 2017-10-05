@@ -26,12 +26,15 @@ export class GMap extends React.Component {
 
   createJMarker(elm) {
     console.log(this.props.stations) ;
-    return new window.google.maps.Marker(
+    var r = new window.google.maps.Marker(
       {
         position: elm.flagLocation,
         map: this.map
       }
-    )
+    ).addListener('click', function(evt) {
+      console.log('in my flag click', evt)
+    });
+    return r;
     // <div>
     // {this.props.stations.map(station => (
     // <div className="station" key={station.call}>{station.call}</div>
