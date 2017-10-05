@@ -2,11 +2,16 @@ import React from 'react';
 
 
 export class GMap extends React.Component {
-  state = { zoom: 10 };
 
-  static propTypes() {
-  	initialCenter: React.PropTypes.objectOf(React.PropTypes.number).isRequired
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      zoom: 14,
+
+    };
   }
+
 
 	render() {
     return <div className="GMap">
@@ -15,15 +20,35 @@ export class GMap extends React.Component {
       </div>
       <div className='GMap-canvas' ref="mapCanvas">
       </div>
+
     </div>
+  }
+
+  createJMarker(elm) {
+    console.log(this.props.stations) ;
+    return new window.google.maps.Marker(
+      {
+        position: elm.flagLocation,
+        map: this.map
+      }
+    )
+    // <div>
+    // {this.props.stations.map(station => (
+    // <div className="station" key={station.call}>{station.call}</div>
+    // ))}
+    // </div>
   }
 
   componentDidMount() {
     // create the map, marker and infoWindow after the component has
     // been rendered because we need to manipulate the DOM for Google =(
     this.map = this.createMap()
-    this.marker = this.createMarker()
+    this.props.stations.map(elm => (
+      this.createJMarker(elm)
+    ))
+    // ßthis.marker = this.createJMarker()
     this.infoWindow = this.createInfoWindow()
+    // console.log("i see stations", this.stations)
 
     // have to define google maps event listeners here too
     // because we can't add listeners on the map until its created
@@ -49,6 +74,7 @@ export class GMap extends React.Component {
       this.props.initialCenter.lng
     )
   }
+
 
   createMarker() {
     return new window.google.maps.Marker({
