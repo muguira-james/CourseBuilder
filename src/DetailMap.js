@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-export class GMap extends React.Component {
+export class DetailMap extends React.Component {
 
   constructor(props) {
     super(props);
@@ -16,12 +16,11 @@ export class GMap extends React.Component {
 
 
 	render() {
-    return <div className="GMap">
+    return <div className="DetailMap">
       <div className='UpdatedText'>
         <p>Current Zoom: { this.state.zoom }</p>
       </div>
-      <div className='GMap-canvas' ref="mapCanvas">
-    
+      <div className='DetailMap-canvas' ref="mapCanvas">
       </div>
 
     </div>
@@ -68,12 +67,16 @@ export class GMap extends React.Component {
 
   createMap() {
     let mapOptions = {
-      zoom: this.state.zoom,
+      zoom: this.mapZoom(),
       center: this.mapCenter()
     }
     return new window.google.maps.Map(this.refs.mapCanvas, mapOptions)
   }
 
+  mapZoom() {
+    this.setState({ zoom: this.props.zoomLevel })
+    return this.props.zoomLevel;
+  }
   mapCenter() {
     var ctr = new window.google.maps.LatLng(
       this.props.initialCenter.lat,
