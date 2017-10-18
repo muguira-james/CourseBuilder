@@ -21,7 +21,7 @@ export class GMap extends React.Component {
         <p>Current Zoom: { this.state.zoom }</p>
       </div>
       <div className='GMap-canvas' ref="mapCanvas">
-    
+
       </div>
 
     </div>
@@ -92,14 +92,14 @@ export class GMap extends React.Component {
     })
 	}
 
-  createInfoWindow() {
-    let contentString = "<div class='InfoWindow'>I'm a Window that contains Info Yay</div>"
-    return new window.google.maps.InfoWindow({
-      map: this.map,
-      anchor: this.marker,
-      content: contentString
-    })
-  }
+  // createInfoWindow() {
+  //   let contentString = "<div class='InfoWindow'>I'm a Window that contains Info Yay</div>"
+  //   return new window.google.maps.InfoWindow({
+  //     map: this.map,
+  //     anchor: this.marker,
+  //     content: contentString
+  //   })
+  // }
 
   handleZoomChange() {
     this.setState({
