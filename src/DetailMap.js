@@ -7,57 +7,47 @@ export class DetailMap extends React.Component {
     super(props);
 
     this.state = {
-      zoom: 14,
-      center: null,
-      flags: null,
-      players: null,
+      mapType: props.mapType,
+      zoom: props.zoomLevel,
+      mlayout: null,
+      mapCenter: props.initialCenter,
+      course: props.course,
+      players: props.players
     };
+    // console.log(props.course)
+
+    var propValue
+    for(var propName in this.props) {
+        propValue = this.props[propName]
+        console.log("prop_name: " + propName, "prop_value: " + propValue);
+    }
   }
 
 
 	render() {
-    return <div className="DetailMap">
-      <div className='UpdatedText'>
-        <p>Current Zoom: { this.state.zoom }</p>
+    return (
+      <div className="GMap">
+        <div className='UpdatedText'>
+          <p>Current Zoom: { this.state.zoom }</p>
+          <p>Cntl State: {this.state.cntlState}</p>
+        </div>
+        <div className='GMap-canvas' ref="mapCanvas"></div>
       </div>
-      <div className='DetailMap-canvas' ref="mapCanvas">
-      </div>
-
-    </div>
+    )
   }
 
-  createJMarker(elm) {
-    console.log(this.props.stations) ;
-    var r = new window.google.maps.Marker(
-      {
-        position: elm.flagLocation,
-        map: this.map
-      }
-    ).addListener('click', function(evt) {
-      console.log('in my flag click', evt)
-    });
-    return r;
-    // <div>
-    // {this.props.stations.map(station => (
-    // <div className="station" key={station.call}>{station.call}</div>
-    // ))}
-    // </div>
-  }
+
 
   componentDidMount() {
-    // create the map, marker and infoWindow after the component has
+    // create the map after the component has
     // been rendered because we need to manipulate the DOM for Google =(
     this.map = this.createMap()
-    this.props.stations.map(elm => (
-      this.createJMarker(elm)
-    ))
-    // ßthis.marker = this.createJMarker()
-    this.infoWindow = this.createInfoWindow()
-    // console.log("i see stations", this.stations)
+
+    this.state.players.map(elm => (this.createMarker(elm)));
 
     // have to define google maps event listeners here too
     // because we can't add listeners on the map until its created
-    window.google.maps.event.addListener(this.map, 'zoom_changed', ()=> this.handleZoomChange())
+    window.google.maps.event.addListener(this.map, 'zoom_changed', (evt)=> this.handleZoomChange(evt))
   }
 
   // clean up event listeners when component unmounts
@@ -65,43 +55,45 @@ export class DetailMap extends React.Component {
     window.google.maps.event.clearListeners(this.map, 'zoom_changed')
   }
 
-  createMap() {
-    let mapOptions = {
-      zoom: this.mapZoom(),
-      center: this.mapCenter()
+  createMarker(elm) {
+    var image = {
+      url: elm.photo,
+      scaledSize: new window.google.maps.Size(85,85)
     }
-    return new window.google.maps.Map(this.refs.mapCanvas, mapOptions)
+    var r = new window.google.maps.Marker(
+      {
+        icon: image,
+        position: elm.playerLocation,
+        map: this.map
+      }
+    ).addListener('click', function(evt) {
+      console.log('in my flag click', evt)
+    });
+    return r;
   }
 
-  mapZoom() {
-    this.setState({ zoom: this.props.zoomLevel })
-    return this.props.zoomLevel;
+  createMap() {
+    let mapOptions = {
+      zoom: this.state.zoom,
+      mapTypeId: this.state.mapType,
+      center: this.mapCenter()
+    }
+    var map = new window.google.maps.Map(this.refs.mapCanvas, mapOptions);
+
+    map.addListener('click', (e) => this.handleMapClick(e));
+    return map;
   }
+
+
+
   mapCenter() {
     var ctr = new window.google.maps.LatLng(
-      this.props.initialCenter.lat,
-      this.props.initialCenter.lng
+      this.state.mapCenter.lat,
+      this.state.mapCenter.lng
     );
     this.setState({center: ctr})
 
     return ctr;
-  }
-
-
-  createMarker() {
-    return new window.google.maps.Marker({
-      position: this.mapCenter(),
-      map: this.map
-    })
-	}
-
-  createInfoWindow() {
-    let contentString = "<div class='InfoWindow'>I'm a Window that contains Info Yay</div>"
-    return new window.google.maps.InfoWindow({
-      map: this.map,
-      anchor: this.marker,
-      content: contentString
-    })
   }
 
   handleZoomChange() {
@@ -110,4 +102,6 @@ export class DetailMap extends React.Component {
     })
     console.log("zoom changed: ",this.state.zoom)
   }
+
+
 }

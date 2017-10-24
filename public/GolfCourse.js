@@ -1,4 +1,9 @@
 
+
+var golfCourse = {
+  "type": "FeatureCollection",
+  "Features":
+  [
   {
     "type":"Feature",
     "properties":{
@@ -16,3 +21,5 @@
       "{\"lat\":40.65656196450863,\"lng\":-74.6949827671051}"
     }
   },
+]
+}

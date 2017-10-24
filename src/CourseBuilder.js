@@ -63,7 +63,8 @@ export class CourseBuilder extends React.Component {
     super(props);
 
     this.state = {
-      zoom: 14,
+      mapType: props.mapType,
+      zoom: props.zoomLevel,
       holeNumData: 1,
       cntlState: "T",
 
@@ -76,6 +77,11 @@ export class CourseBuilder extends React.Component {
     };
     console.log(props.course)
 
+    var propValue
+    for(var propName in this.props) {
+        propValue = this.props[propName]
+        console.log("prop name: " + propName, "prop value: " + propValue);
+    }
 
     this.handlClearClick = this.handleClearClick.bind(this);
     this.handleSaveClick = this.handleSaveClick.bind(this);
@@ -132,7 +138,7 @@ export class CourseBuilder extends React.Component {
     t.properties.TeeLocation = JSON.stringify(JSON.parse(tloc));
     t.properties.FlagLocation = JSON.stringify(JSON.parse(floc));
     t.properties.labelLocation = JSON.stringify(JSON.parse(lloc));
-    
+
     t.properties.LayoutCoordinates = {};
     t.properties.LayoutCoordinates.type = "Feature";
     t.properties.LayoutCoordinates.properties = {};
@@ -301,6 +307,7 @@ export class CourseBuilder extends React.Component {
   createMap() {
     let mapOptions = {
       zoom: this.state.zoom,
+      mapTypeId: this.state.mapType,
       center: this.mapCenter()
     }
     var map = new window.google.maps.Map(this.refs.mapCanvas, mapOptions);
